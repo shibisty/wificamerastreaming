@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">WiFi Камера</string>
+
+    <string name="button_take_photo">Зробити фото</string>
+    <string name="button_capturing">Знімаємо...</string>
+    <string name="button_take_photo_remote">Зробити фото віддалено</string>
+
+    <string name="devices_screen_title">Пристрої в мережі</string>
+    <string name="back_button_description">Назад</string>
+    <string name="devices_button_description">Пристрої</string>
+    <string name="patreon_button_description">Підтримати на Patreon</string>
+
+    <string name="permission_camera_denied">Для зйомки фото потрібен доступ до камери</string>
+    <string name="permission_storage_denied">Для збереження фото в галерею потрібен доступ до пам\'яті</string>
+</resources>

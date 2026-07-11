@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">WiFi Camera</string>
+
+    <string name="button_take_photo">Take photo</string>
+    <string name="button_capturing">Capturing...</string>
+    <string name="button_take_photo_remote">Take photo remotely</string>
+
+    <string name="devices_screen_title">Devices on network</string>
+    <string name="back_button_description">Back</string>
+    <string name="devices_button_description">Devices</string>
+    <string name="patreon_button_description">Support on Patreon</string>
+
+    <string name="permission_camera_denied">Camera access is required to take photos</string>
+    <string name="permission_storage_denied">Storage access is required to save photos to gallery</string>
+</resources>
