@@ -1,104 +1,104 @@
 # WiFi Camera Streaming
 
-Android-приложение для удалённого управления камерой другого устройства в локальной Wi-Fi сети. Каждый инстанс приложения одновременно является и "камерой", и "пультом управления" для других устройств в той же сети.
+An Android application for remotely controlling another device's camera over a local Wi-Fi network. Each app instance acts both as a **camera** and as a **remote controller** for other devices on the same network.
 
-## Возможности
+## Features
 
-- 📷 Съёмка фото с сохранением в галерею устройства
-- 📡 Обнаружение других устройств с этим же приложением в локальной Wi-Fi сети (без интернета и без сервера)
-- 🎥 Живой стриминг видео с удалённой камеры перед съёмкой
-- 🌍 Локализация: английский (по умолчанию) + украинский, переключается через системный язык телефона
-- 🌗 Автоматическая светлая/тёмная тема — следует системной теме устройства
+- 📷 Capture photos and save them to the device's gallery
+- 📡 Discover other devices running the same app on the local Wi-Fi network (no Internet or central server required)
+- 🎥 Live video streaming from the remote camera before taking a photo
+- 🌍 Localization: English (default) and Ukrainian, automatically selected based on the system language
+- 🌗 Automatic light/dark theme that follows the device's system theme
 
-## Как это работает
+## How It Works
 
-1. При запуске приложение регистрирует себя в локальной сети через **NSD (Network Service Discovery)** под уникальным именем и поднимает лёгкий **Ktor-сервер** на порту `9865`.
-2. На экране **"Устройства"** отображается список других найденных в сети устройств (сам себя приложение из списка исключает).
-3. При выборе устройства открывается экран удалённого управления: устанавливается **WebSocket-соединение** для получения живого видеопотока, а по кнопке "Сделать фото" отправляется HTTP-запрос на `/capture`, который удалённое устройство обрабатывает, снимает фото, сохраняет его в свою галерею и возвращает превью инициатору.
+1. On startup, the app registers itself on the local network using **NSD (Network Service Discovery)** with a unique service name and starts a lightweight **Ktor server** on port `9865`.
+2. The **"Devices"** screen displays all other discovered devices on the network (excluding itself).
+3. When a device is selected, the remote control screen opens. A **WebSocket connection** is established to receive the live video stream, while pressing the **"Take Photo"** button sends an HTTP request to `/capture`. The remote device processes the request, captures a photo, saves it to its own gallery, and returns a preview image to the initiating device.
 
 ```
-Устройство A (пульт)              Устройство B (камера)
+Device A (Controller)                  Device B (Camera)
 ┌────────────────────┐                   ┌───────────────────┐
-│  DeviceListScreen  │───────── NSD ───▶ │  зарегистрирован  │
-│                    │                   │    в сети         │
+│  DeviceListScreen  │───────── NSD ───▶ │   Registered      │
+│                    │                   │   on the network  │
 ├────────────────────┤                   ├───────────────────┤
 │ RemoteControlScreen│◀──── WS /stream ──│  StreamServer     │
-│  (живое превью)    │                   │  (кадры с камеры) │
-│                    │─── POST /capture ▶│  делает снимок,   │
-│                    │◀──  JPEG bytes ───│  сохраняет в      │
-└────────────────────┘                   │  галерею          │
+│   (Live Preview)   │                   │ (Camera frames)   │
+│                    │─── POST /capture ▶│  Captures photo,  │
+│                    │◀──  JPEG bytes ───│  saves it to      │
+└────────────────────┘                   │  the gallery      │
                                          └───────────────────┘
 ```
 
-## Стек технологий
+## Technology Stack
 
-| Компонент | Используется для |
+| Component | Purpose |
 |---|---|
-| Kotlin + Jetpack Compose | UI, декларативный интерфейс |
-| Navigation Compose | Навигация между экранами |
-| CameraX (`camera-core`, `camera-camera2`, `camera-lifecycle`) | Доступ к камере, захват кадров |
-| NsdManager (Android SDK) | Обнаружение устройств в локальной сети (mDNS/DNS-SD) |
-| Ktor Server (CIO engine) | Локальный сервер на устройстве-камере — HTTP + WebSocket |
-| Ktor Client (CIO engine) | Подключение к серверу другого устройства |
-| MediaStore API | Сохранение фото в системную галерею |
-| Coroutines / Flow | Асинхронность, живой поток кадров |
+| Kotlin + Jetpack Compose | UI, declarative interface |
+| Navigation Compose | Navigation between screens |
+| CameraX (`camera-core`, `camera-camera2`, `camera-lifecycle`) | Camera access and frame capture |
+| NsdManager (Android SDK) | Local network device discovery (mDNS/DNS-SD) |
+| Ktor Server (CIO engine) | Local server on the camera device (HTTP + WebSocket) |
+| Ktor Client (CIO engine) | Connects to another device's server |
+| MediaStore API | Saves photos to the system gallery |
+| Coroutines / Flow | Asynchronous operations and live frame streaming |
 
-## Структура проекта
+## Project Structure
 
 ```
 app/src/main/java/com/example/wificamerastreaming/
 ├── camera/
-│   └── CameraStreamer.kt       — биндинг CameraX, захват фото, стрим кадров в JPEG
+│   └── CameraStreamer.kt       — CameraX binding, photo capture, JPEG frame streaming
 ├── discovery/
-│   ├── NsdHelper.kt            — регистрация и поиск устройств через NSD
-│   └── DeviceIdProvider.kt     — генерация уникального ID устройства
+│   ├── NsdHelper.kt            — NSD registration and device discovery
+│   └── DeviceIdProvider.kt     — Generates a unique device ID
 ├── network/
-│   ├── StreamServer.kt         — Ktor-сервер: /capture (HTTP) + /stream (WebSocket)
-│   ├── StreamClient.kt         — WebSocket-клиент для приёма живого потока
-│   └── CaptureClient.kt        — HTTP-клиент для команды "сделать фото"
+│   ├── StreamServer.kt         — Ktor server: /capture (HTTP) + /stream (WebSocket)
+│   ├── StreamClient.kt         — WebSocket client for receiving the live stream
+│   └── CaptureClient.kt        — HTTP client for the "Take Photo" command
 ├── ui/
-│   ├── camera/CameraScreen.kt       — локальная камера + кнопки съёмки/устройств
-│   ├── devices/DeviceListScreen.kt  — список найденных устройств
-│   ├── remote/RemoteControlScreen.kt — управление удалённой камерой + живое превью
-│   └── theme/                       — цвета, типографика, светлая/тёмная тема
-├── MainActivity.kt              — точка входа, разрешения, NavHost, сервер/discovery
-└── res/values(-uk)/strings.xml  — локализованные строки
+│   ├── camera/CameraScreen.kt        — Local camera with capture/devices buttons
+│   ├── devices/DeviceListScreen.kt   — List of discovered devices
+│   ├── remote/RemoteControlScreen.kt — Remote camera control with live preview
+│   └── theme/                        — Colors, typography, light/dark themes
+├── MainActivity.kt              — Entry point, permissions, NavHost, server/discovery
+└── res/values(-uk)/strings.xml  — Localized strings
 ```
 
-## Разрешения
+## Permissions
 
-| Разрешение | Зачем | Особенности |
+| Permission | Purpose | Notes |
 |---|---|---|
-| `CAMERA` | Съёмка фото и стриминг | Runtime-запрос при первом запуске |
-| `INTERNET` | Работа Ktor-сервера/клиента | Обычное манифест-разрешение |
-| `ACCESS_WIFI_STATE`, `ACCESS_NETWORK_STATE` | Работа NSD | Обычное манифест-разрешение |
-| `CHANGE_WIFI_MULTICAST_STATE` | Корректная работа mDNS-обнаружения | Обычное манифест-разрешение |
-| `WRITE_EXTERNAL_STORAGE` | Сохранение фото в галерею | Только API 24–28 (`maxSdkVersion="28"`), runtime-запрос; на API 29+ не требуется благодаря scoped storage |
+| `CAMERA` | Photo capture and live streaming | Runtime permission requested on first launch |
+| `INTERNET` | Ktor server/client communication | Standard manifest permission |
+| `ACCESS_WIFI_STATE`, `ACCESS_NETWORK_STATE` | NSD functionality | Standard manifest permissions |
+| `CHANGE_WIFI_MULTICAST_STATE` | Proper mDNS discovery | Standard manifest permission |
+| `WRITE_EXTERNAL_STORAGE` | Saving photos to the gallery | Required only for API 24–28 (`maxSdkVersion="28"`); runtime permission. Not required on API 29+ due to scoped storage |
 
-## Требования
+## Requirements
 
 - **minSdk 21** (Android 5.0)
 - **compileSdk / targetSdk 36**
 - Kotlin 2.0+, JVM target 11
-- Оба устройства должны находиться в одной Wi-Fi сети без изоляции клиентов (AP isolation должен быть выключен на роутере)
+- Both devices must be connected to the same Wi-Fi network with **client isolation (AP isolation) disabled** on the router.
 
-## Известные ограничения
+## Known Limitations
 
-- Ориентация экрана зафиксирована в портретном режиме (`screenOrientation="portrait"`) — приложение не пересоздаёт активные сетевые соединения/камеру при повороте устройства.
-- Кадры стрима передаются как отдельные JPEG-изображения через WebSocket (~10 fps) — не настоящий видеокодек, подходит для превью перед съёмкой, но не для полноценной видеотрансляции.
-- Discovery работает только в пределах одной локальной сети (без выхода в интернет).
+- Screen orientation is locked to portrait mode (`screenOrientation="portrait"`). This prevents active camera and network connections from being recreated during device rotation.
+- The live stream consists of individual JPEG frames sent over WebSocket (~10 FPS). This is **not** a true video codec and is intended only for a live preview before taking a photo.
+- Device discovery works only within the same local network (no Internet support).
 
-## Сборка
+## Build
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-APK будет собран в `app/build/outputs/apk/debug/`.
+The APK will be generated in `app/build/outputs/apk/debug/`.
 
-## Дальнейшие возможные улучшения
+## Possible Future Improvements
 
-- Полноценное H.264-кодирование видеопотока вместо серии JPEG-кадров
-- Ручной выбор языка внутри приложения (сейчас — только через системные настройки)
-- Обработка edge-кейсов сети (таймауты, потеря соединения, повторное подключение)
-- Поддержка нескольких камер устройства (фронтальная/основная) на удалённом экране
+- H.264 video encoding instead of streaming individual JPEG frames
+- Manual language selection within the app (currently follows the system language)
+- Better handling of network edge cases (timeouts, connection loss, automatic reconnection)
+- Support for multiple device cameras (front/rear) from the remote control screen
