@@ -1,5 +1,7 @@
 # WiFi Camera Streaming
 
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/cw/shibisty)
+
 An Android application for remotely controlling another device's camera over a local Wi-Fi network. Each app instance acts both as a **camera** and as a **remote controller** for other devices on the same network.
 
 ## Features
@@ -102,3 +104,7 @@ The APK will be generated in `app/build/outputs/apk/debug/`.
 - Manual language selection within the app (currently follows the system language)
 - Better handling of network edge cases (timeouts, connection loss, automatic reconnection)
 - Support for multiple device cameras (front/rear) from the remote control screen
+
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/cw/shibisty)
+
+If this project helps you, consider supporting its development on Patreon ❤️
