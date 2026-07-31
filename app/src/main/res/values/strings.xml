@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WiFi Camera</string>
+    <string name="app_name">Remote Camera Streaming</string>
 
     <string name="button_take_photo">Take photo</string>
     <string name="button_capturing">Capturing...</string>
@@ -12,4 +12,7 @@
 
     <string name="permission_camera_denied">Camera access is required to take photos</string>
     <string name="permission_storage_denied">Storage access is required to save photos to gallery</string>
+
+    <string name="photo_saved_on_this_device">📸 Photo saved on this device</string>
+    <string name="devices_not_found">Not found</string>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WiFi Камера</string>
+    <string name="app_name">Remote Camera Streaming</string>
 
     <string name="button_take_photo">Зробити фото</string>
     <string name="button_capturing">Знімаємо...</string>
@@ -12,4 +12,6 @@
 
     <string name="permission_camera_denied">Для зйомки фото потрібен доступ до камери</string>
     <string name="permission_storage_denied">Для збереження фото в галерею потрібен доступ до пам\'яті</string>
+    <string name="photo_saved_on_this_device">📸 Фото збережено на цьому пристрої</string>
+    <string name="devices_not_found">Не знайдено</string>
 </resources>

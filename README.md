@@ -46,7 +46,7 @@ Android-приложение для удалённого управления к
 ## Структура проекта
 
 ```
-app/src/main/java/com/example/wificamerastreaming/
+app/src/main/java/com/wificamerastreaming/
 ├── camera/
 │   └── CameraStreamer.kt       — биндинг CameraX, захват фото, стрим кадров в JPEG
 ├── discovery/

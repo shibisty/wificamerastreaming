@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.wificamerastreaming"
+    namespace = "com.wificamerastreaming"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.wificamerastreaming"
+        applicationId = "com.wificamerastreaming"
         minSdk = 21
         targetSdk = 36
         versionCode = 1
